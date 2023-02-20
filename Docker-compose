@@ -1,0 +1,43 @@
+version: "3"
+services:
+  dockerfile:
+	build: . #Ruta del DockerFile
+  mysql: # Nombre del servicio
+	image: mysql:latest #Imagen que nos descargamos
+	volumes:
+  	- mysql-data:/var/lib/mysql
+  	- /var/run/mysqld/mydql.sock:/var/run/mysqld/mydql.sock
+	environment:
+  	MYSQL_ROOT_PASSWORD: root1234 #Contraseña del root
+  	MYSQL_USER: dev # Usuario
+  	MYSQL_PASSWORD: dev # Contraseña
+  	MYSQL_DATABASE: bbdduniversidad #Nombre de la base de datos
+	ports:
+  	- "3306:3306" # Puertos del MySql
+	command: --default-authentication-plugin=mysql_native_password
+  phpmyadmin: # Nombre del servicio
+	image: phpmyadmin/phpmyadmin  # Imagen que nos descargamos
+	environment:
+  	PMA_HOST: mysql  #Host
+	ports:
+  	- "8091:80" # Puertos
+	volumes:
+  	- $HOME:/home/dev
+  	- /var/lib/docker
+  	- /var/run/docker.sock
+	ports: # Puertos
+  	- "2222:2222"
+  	- "8081:8081"
+	depends_on: #Hacemos que dependa del MySql
+  	- mysql
+  devops: # Nombre del servicio
+	image: jenkins/jenkins # imagen que nos descargamos
+	ports: #Puertos
+  	- "8011:8080"
+  	- "50000:50000"
+	volumes:
+  	- jenkins-data:/var/jenkins_home
+  	- /var/run/docker.sock:/var/run/docker.sock
+	environment:
+  	JAVA_OPTS: "-Djenkins.install.runSetupWizard=false" #Instalamos JAVA
+	command: --prefix=/jenkins 
