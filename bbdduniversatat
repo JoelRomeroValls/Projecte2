@@ -1,0 +1,63 @@
+CREATE DATABASE bbdduniversitat;
+USE bbdduniversitat;
+
+CREATE TABLE professors (
+    dni VARCHAR(10) PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    cognoms VARCHAR(100) NOT NULL,
+    direccio VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE assignatures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    codi VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE impartir (
+    professor_dni VARCHAR(10) NOT NULL,
+    assignatura_id INT NOT NULL,
+    PRIMARY KEY (professor_dni, assignatura_id),
+    FOREIGN KEY (professor_dni) REFERENCES professors(dni),
+    FOREIGN KEY (assignatura_id) REFERENCES assignatures(id)
+);
+
+CREATE TABLE estudiants (
+    dni VARCHAR(10) PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    cognoms VARCHAR(100) NOT NULL,
+    direccio VARCHAR(255) NOT NULL,
+    telefon VARCHAR(20) NOT NULL,
+    data_naixement DATE NOT NULL,
+    expedient INT NOT NULL,
+    edat INT NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE matricular (
+    estudiant_dni VARCHAR(10) NOT NULL,
+    assignatura_id INT NOT NULL,
+    PRIMARY KEY (estudiant_dni, assignatura_id),
+    FOREIGN KEY (estudiant_dni) REFERENCES estudiants(dni),
+    FOREIGN KEY (assignatura_id) REFERENCES assignatures(id)
+);
+
+CREATE TABLE classes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    president INT NOT NULL,
+    FOREIGN KEY (president) REFERENCES estudiants(dni)
+);
+
+CREATE TABLE formar (
+    estudiant_dni VARCHAR(10) NOT NULL,
+    classe_id INT NOT NULL,
+    PRIMARY KEY (estudiant_dni, classe_id),
+    FOREIGN KEY (estudiant_dni) REFERENCES estudiants(dni),
+    FOREIGN KEY (classe_id) REFERENCES classes(id)
+);
+
+CREATE TABLE bicicletes (
+    estudiant_dni VARCHAR(10) NOT NULL,
+    PRIMARY KEY (estudiant_dni),
+    FOREIGN KEY (estudiant_dni) REFERENCES estudiants(dni)
+);
